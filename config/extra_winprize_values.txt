@@ -1,0 +1,6 @@
+stamina
+reason
+doom
+experience
+ending_trigger
+card_add

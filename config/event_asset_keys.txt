@@ -1,0 +1,2 @@
+image,mystery
+load_sound,mystery

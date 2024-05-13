@@ -1,0 +1,12 @@
+book
+magicitem
+mask
+poor
+ring
+dogshop
+villagedogshop
+vendingshop
+hardwareshop
+pharmacyshop
+magicshop
+hideout

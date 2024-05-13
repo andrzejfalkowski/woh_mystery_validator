@@ -1,0 +1,6 @@
+extra_winprizea
+extra_winprizeb
+extra_winprizec
+extra_failprizea
+extra_failprizeb
+extra_failprizec

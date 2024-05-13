@@ -1,0 +1,6 @@
+winprizea
+winprizeb
+winprizec
+failprizea
+failprizeb
+failprizec

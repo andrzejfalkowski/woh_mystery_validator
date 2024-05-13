@@ -1,0 +1,15 @@
+name
+trigger
+art
+flavor
+tags
+a_effect
+a_value
+b_effect
+b_value
+end_title
+end_img
+end_txta
+end_txtb
+end_txtc
+end_txtd
