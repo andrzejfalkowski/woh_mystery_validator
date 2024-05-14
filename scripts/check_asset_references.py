@@ -33,7 +33,7 @@ def check_asset_references(basename, root, keys_file, allow_n_r = False):
                 if '=' in line:
                     key, value = line.split('=', 1)
                     key = key.strip()
-                    value = value.strip().strip('"')
+                    value = value.strip().strip('"').replace('\\', os.sep).replace('/', os.sep)
                     if key in keys_and_roots and value:  # Only proceed if value is not empty
                         required_path = keys_and_roots[key]
                         if required_path:
@@ -43,7 +43,6 @@ def check_asset_references(basename, root, keys_file, allow_n_r = False):
                             # Exclude root
                             value = value[len(required_path):]
 
-                        value = value.replace('\\', os.sep)
                         ref_full_path = os.path.join(root, value)
                         if not os.path.exists(ref_full_path):
                             errors.append(f"File not found: {value} referenced at key '{key}'")

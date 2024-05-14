@@ -36,7 +36,7 @@ def check_trigger_references(basename, root, keys_file, allow_n_r = False):
                 if '=' in line:
                     key, value = line.split('=', 1)
                     key = key.strip()
-                    value = value.strip().strip('"')
+                    value = value.strip().strip('"').replace('\\', os.sep).replace('/', os.sep)
 
                     # Triggers can only be set as a prize
                     if 'winprize' in key:
@@ -59,7 +59,6 @@ def check_trigger_references(basename, root, keys_file, allow_n_r = False):
                                 continue
                             value = value[len(required_path):]
 
-                        value = value.replace('\\', os.sep)
                         ref_full_path = os.path.join(root, value)
                         if not os.path.exists(ref_full_path):
                             errors.append(f"File not found: {value} referenced at key '{key}'")
