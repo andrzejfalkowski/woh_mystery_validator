@@ -1,6 +1,6 @@
-winnumbera,mystery
-winnumberb,mystery
-winnumberc,mystery
-failnumbera,mystery
-failnumberb,mystery
-failnumberc,mystery
+winnumbera,True
+winnumberb,True
+winnumberc,True
+failnumbera,True
+failnumberb,True
+failnumberc,True

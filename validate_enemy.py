@@ -16,7 +16,6 @@ sys.path.append(SCRIPTS_PATH)
 from check_quotes import check_quotes
 from check_no_duplicate_keys import check_no_duplicate_keys
 from check_asset_references import check_asset_references
-from check_trigger_references import check_trigger_references
 from check_keys_and_values import check_keys_and_values
 from check_keys_and_values import check_key_and_values
 from check_prizes import check_prizes
@@ -37,17 +36,7 @@ DAMAGETYPE_KEYS = "damagetype_keys.txt"
 PRIZE_NAME = "prize_name"
 ITEM_VALUES = "item_values.txt"
 
-def load_exclusions(filepath):
-    exclusions = {}
-    with open(filepath, 'r') as file:
-        for line in file:
-            parts = line.strip().split(',')
-            key = parts[0].strip()
-            exclusion = parts[1].strip() + os.sep if len(parts) > 1 else None
-            exclusions[key] = exclusion
-    return exclusions
-
-def validate_enemy(basename, root, already_checked_events=None, already_checked_enemies=None, print_prefix="", print_info=True):
+def validate_enemy(basename, root, subdir, already_checked_events=None, already_checked_enemies=None, print_prefix="", print_info=True):
 
     basename = basename.replace('\\', os.sep).replace('/', os.sep)
     root = root.replace('\\', os.sep).replace('/', os.sep)
@@ -71,8 +60,6 @@ def validate_enemy(basename, root, already_checked_events=None, already_checked_
         return True, "" 
 
     already_checked_enemies.add(filepath)        
-
-    filepath_exclusions = load_exclusions(os.path.join(CONFIG_PATH, ASSET_KEYS))
 
     # Check for unclosed quotes
     if print_info:
@@ -129,7 +116,7 @@ def validate_enemy(basename, root, already_checked_events=None, already_checked_
     # Check referenced files
     if print_info:
         print(f"{print_prefix}Checking file references...")
-    file_ref_valid, file_ref_message = check_asset_references(basename, root, os.path.join(CONFIG_PATH, ASSET_KEYS))
+    file_ref_valid, file_ref_message = check_asset_references(basename, root, subdir, os.path.join(CONFIG_PATH, ASSET_KEYS))
     if not file_ref_valid:
         for message in file_ref_message:
             print(f"{print_prefix}{RED}{message}{RESET}")
@@ -146,7 +133,7 @@ if __name__ == "__main__":
         print("Usage: python validate_enemy.py <path_to_enemy_ito_file>")
     else:
         filename = sys.argv[1]
-        valid, valid_message = validate_enemy(os.path.basename(filename), os.path.dirname(filename))
+        valid, valid_message = validate_enemy(os.path.basename(filename), os.path.dirname(filename), "")
         if not valid:
             print(valid_message)
         

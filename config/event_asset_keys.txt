@@ -1,2 +1,2 @@
-image,mystery
-load_sound,mystery
+image,True
+load_sound,True

@@ -1,2 +1,2 @@
-art01,mystery
-art02,mystery
+art01,True
+art02,True

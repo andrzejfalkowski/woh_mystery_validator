@@ -54,17 +54,17 @@ CHARACTER_VALUES = "character_values.txt"
 
 ADDITIONAL_PREFIX = "   "
 
-def load_exclusions(filepath):
-    exclusions = {}
+def load_subdir_requirements(filepath):
+    keys_requiring_subdirs = {}
     with open(filepath, 'r') as file:
         for line in file:
             parts = line.strip().split(',')
             key = parts[0].strip()
-            exclusion = parts[1].strip() + os.sep if len(parts) > 1 else None
-            exclusions[key] = exclusion
-    return exclusions
+            requires_subdir = parts[1].strip() if len(parts) > 1 else None
+            keys_requiring_subdirs[key] = requires_subdir == 'True'
+    return keys_requiring_subdirs
 
-def validate_event(basename, root, already_checked_events=None, already_checked_enemies=None, print_prefix="", print_info=True):
+def validate_event(basename, root, subdir="", already_checked_events=None, already_checked_enemies=None, print_prefix="", print_info=True):
 
     basename = basename.replace('\\', os.sep).replace('/', os.sep)
     root = root.replace('\\', os.sep).replace('/', os.sep)
@@ -88,9 +88,8 @@ def validate_event(basename, root, already_checked_events=None, already_checked_
         return True, "" 
         
     already_checked_events.add(filepath)
-        
-    filepath_exclusions = load_exclusions(os.path.join(CONFIG_PATH, ASSET_KEYS))
-    trigger_path_exclusions = load_exclusions(os.path.join(CONFIG_PATH, TRIGGER_KEYS))
+
+    triggers_requiring_subdirs = load_subdir_requirements(os.path.join(CONFIG_PATH, TRIGGER_KEYS))
 
     # Check for unclosed quotes
     if print_info:
@@ -191,7 +190,7 @@ def validate_event(basename, root, already_checked_events=None, already_checked_
     # Check referenced files
     if print_info:
         print(f"{print_prefix}Checking file references...")
-    file_ref_valid, file_ref_message = check_asset_references(basename, root, os.path.join(CONFIG_PATH, ASSET_KEYS))
+    file_ref_valid, file_ref_message = check_asset_references(basename, root, subdir, os.path.join(CONFIG_PATH, ASSET_KEYS))
     if not file_ref_valid:
         for message in file_ref_message:
             print(f"{print_prefix}{RED}{message}{RESET}")
@@ -247,9 +246,10 @@ def validate_event(basename, root, already_checked_events=None, already_checked_
 
     # Validate each linked enemy
     for key, path in enemies_to_check.items():
-        if key in trigger_path_exclusions and trigger_path_exclusions[key] and path.startswith(trigger_path_exclusions[key]):
-            path = path[len(trigger_path_exclusions[key]):]
-        path = path.replace('\\', os.sep)
+        path = path.strip().strip('"').replace('\\', os.sep).replace('/', os.sep)
+        print(f"subdir {subdir}")
+        if key in triggers_requiring_subdirs and triggers_requiring_subdirs[key] and path.startswith(subdir):
+            path = path[len(subdir):]
         full_path = os.path.join(root, path)
         if not os.path.exists(full_path):
             print(f"{RED}{print_prefix}Referenced file {path} does not exist.{RESET}")
@@ -257,15 +257,15 @@ def validate_event(basename, root, already_checked_events=None, already_checked_
         file_ref_valid, file_ref_message
         if print_info:
             print(f"{print_prefix}Validating linked enemy file: {path}")
-        linked_enemy_valid, linked_enemy_message = validate_enemy(path, root, already_checked_events, already_checked_enemies, print_prefix + ADDITIONAL_PREFIX, print_info)
+        linked_enemy_valid, linked_enemy_message = validate_enemy(path, root, subdir, already_checked_events, already_checked_enemies, print_prefix + ADDITIONAL_PREFIX, print_info)
         if not linked_enemy_valid:
             return False, f"{linked_enemy_message}"
  
     # Recursively validate each linked event
     for key, path in events_to_check.items():
-        if key in trigger_path_exclusions and trigger_path_exclusions[key] and path.startswith(trigger_path_exclusions[key]):
-            path = path[len(trigger_path_exclusions[key]):]
-        path = path.replace('\\', os.sep)
+        path = path.strip().strip('"').replace('\\', os.sep).replace('/', os.sep)
+        if key in triggers_requiring_subdirs and triggers_requiring_subdirs[key] and path.startswith(subdir):
+            path = path[len(subdir):]
         full_path = os.path.join(root, path)
         if not os.path.exists(full_path):
             print(f"{RED}{print_prefix}Referenced file {path} does not exist.{RESET}")
@@ -273,7 +273,7 @@ def validate_event(basename, root, already_checked_events=None, already_checked_
         file_ref_valid, file_ref_message
         if print_info:
             print(f"{print_prefix}Validating linked event file: {path}")
-        linked_event_valid, linked_event_message = validate_event(path, root, already_checked_events, already_checked_enemies, print_prefix + "   ", print_info)
+        linked_event_valid, linked_event_message = validate_event(path, root, subdir, already_checked_events, already_checked_enemies, print_prefix + "   ", print_info)
         if not linked_event_valid:
             return False, f"{linked_event_message}"
 
@@ -284,7 +284,7 @@ if __name__ == "__main__":
         print("Usage: python validate_event.py <path_to_event_ito_file>")
     else:
         filename = sys.argv[1]
-        valid, valid_message = validate_event(os.path.basename(filename), os.path.dirname(filename))
+        valid, valid_message = validate_event(os.path.basename(filename), os.path.dirname(filename), "")
         if not valid:
             print(valid_message)
         
