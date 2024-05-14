@@ -11,7 +11,7 @@ def load_subdir_requirements(filepath):
     return keys_requiring_subdirs
         
 # Check if referenced events exist
-def check_trigger_references(basename, root, keys_file, allow_n_r = False):
+def check_trigger_references(basename, root, subdir, keys_file, allow_n_r = False):
  
     triggers_requiring_subdirs = load_subdir_requirements(keys_file)
 

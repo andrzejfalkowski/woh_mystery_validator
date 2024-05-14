@@ -200,7 +200,9 @@ def validate_event(basename, root, subdir="", already_checked_events=None, alrea
         print(f"{print_prefix}{file_ref_message}")
         
     # Conditional trigger reference check
-    trigger_ref_valid, trigger_ref_message = check_trigger_references(basename, root, os.path.join(CONFIG_PATH, TRIGGER_KEYS))
+    if print_info:
+        print(f"{print_prefix}Checking trigger references...")
+    trigger_ref_valid, trigger_ref_message = check_trigger_references(basename, root, subdir, os.path.join(CONFIG_PATH, TRIGGER_KEYS))
     if not trigger_ref_valid:
         for message in trigger_ref_message:
             print(f"{print_prefix}{message}")
@@ -248,7 +250,6 @@ def validate_event(basename, root, subdir="", already_checked_events=None, alrea
     # Validate each linked enemy
     for key, path in enemies_to_check.items():
         path = path.strip().strip('"').replace('\\', os.sep).replace('/', os.sep)
-        print(f"subdir {subdir}")
         if key in triggers_requiring_subdirs and triggers_requiring_subdirs[key] and path.startswith(subdir):
             path = path[len(subdir):]
         full_path = os.path.join(root, path)
