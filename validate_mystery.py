@@ -1,5 +1,6 @@
 import os
 import sys
+import argparse
 
 # PyInstaller check
 if getattr(sys, 'frozen', False):
@@ -114,7 +115,7 @@ def validate_mystery(basename, root, subdir="", already_checked_events=None, alr
                         path = path[len(subdir):]
                     full_path = os.path.join(root, path)
                     if print_info:
-                        print(f"{print_prefix}Checking referenced event file: {path} {full_path}")
+                        print(f"{print_prefix}Checking referenced event file: {path}")
                     if not os.path.exists(full_path):
                         print(f"{RED}{print_prefix}Referenced file {path} does not exist.{RESET}")
                         return False, f"{basename}: Referenced file {path} does not exist."
@@ -138,12 +139,20 @@ def validate_mystery(basename, root, subdir="", already_checked_events=None, alr
 
     return True, ""
 
+def main():
+    parser = argparse.ArgumentParser(description='Validate a mystery file.')
+    parser.add_argument('path', type=str, help='Path to the event .ito file')
+    parser.add_argument('--subdir', type=str, default="", help='Optional subdirectory for assets and triggers (e.g. \"mystery\\")')
+
+    args = parser.parse_args()
+
+    filename = args.path
+    subdir = args.subdir if args.subdir else "mystery" + os.sep
+
+    valid, valid_message = validate_mystery(os.path.basename(filename), os.path.dirname(filename), subdir)
+    if not valid:
+        print(valid_message)
+
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: python validate_mystery.py <path_to_mystery_ito_file>")
-    else:
-        filename = sys.argv[1]
-        valid, valid_message = validate_mystery(os.path.basename(filename), os.path.dirname(filename), "mystery" + os.sep)
-        if not valid:
-            print(valid_message)
-        input("Press any key to exit...")
+    main()
+    input("Press any key to exit...")

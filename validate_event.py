@@ -1,5 +1,6 @@
 import os
 import sys
+import argparse
 
 # PyInstaller check
 if getattr(sys, 'frozen', False):
@@ -279,12 +280,21 @@ def validate_event(basename, root, subdir="", already_checked_events=None, alrea
 
     return True, ""
 
+def main():
+    parser = argparse.ArgumentParser(description='Validate an event file.')
+    parser.add_argument('path', type=str, help='Path to the event .ito file')
+    parser.add_argument('--subdir', type=str, default="", help='Optional subdirectory for assets and triggers (e.g. \"mystery\\")')
+
+    args = parser.parse_args()
+
+    filename = args.path
+    subdir = args.subdir
+
+    valid, valid_message = validate_event(os.path.basename(filename), os.path.dirname(filename), subdir)
+    if not valid:
+        print(valid_message)
+
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: python validate_event.py <path_to_event_ito_file>")
-    else:
-        filename = sys.argv[1]
-        valid, valid_message = validate_event(os.path.basename(filename), os.path.dirname(filename), "")
-        if not valid:
-            print(valid_message)
+    main()
+    input("Press any key to exit...")
         

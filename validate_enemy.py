@@ -1,5 +1,6 @@
 import os
 import sys
+import argparse
 
 # PyInstaller check
 if getattr(sys, 'frozen', False):
@@ -128,12 +129,20 @@ def validate_enemy(basename, root, subdir, already_checked_events=None, already_
 
     return True, ""
 
+def main():
+    parser = argparse.ArgumentParser(description='Validate an enemy file.')
+    parser.add_argument('path', type=str, help='Path to the enemy .ito file')
+    parser.add_argument('--subdir', type=str, default="", help='Optional subdirectory for assets and triggers (e.g. \"mystery\\")')
+
+    args = parser.parse_args()
+
+    filename = args.path
+    subdir = args.subdir
+
+    valid, valid_message = validate_enemy(os.path.basename(filename), os.path.dirname(filename), subdir)
+    if not valid:
+        print(valid_message)
+
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: python validate_enemy.py <path_to_enemy_ito_file>")
-    else:
-        filename = sys.argv[1]
-        valid, valid_message = validate_enemy(os.path.basename(filename), os.path.dirname(filename), "")
-        if not valid:
-            print(valid_message)
-        
+    main()
+    input("Press any key to exit...")  
