@@ -12,24 +12,29 @@ from validate_mystery import validate_mystery
 from validate_event import validate_event
 from validate_enemy import validate_enemy
 
-def validate(basename, root, subdir="", print_prefix="", print_info=True):
+os.system("")
+RED = '\033[31m'
+GREEN = '\033[32m'
+YELLOW = '\033[33m'
+DARK_GRAY = '\033[90m'
+RESET = '\033[0m'
 
-    basename = basename.replace('\\', os.sep).replace('/', os.sep)
-    root = root.replace('\\', os.sep).replace('/', os.sep)
-    filepath = os.path.join(root, basename).replace('\\', os.sep)
+def validate(ito_filepath, mod_dir="", mod_root="", print_prefix="", print_info=True):
+
+    basename = os.path.basename(ito_filepath)
     
     try:
-        with open(filepath, 'r', encoding='utf-8') as file:
+        with open(ito_filepath, 'r', encoding='utf-8') as file:
             line = file.readline().strip()
             if line == '[mystery]':
                 print(f"Recognized mystery file")
-                validate_mystery(basename, root, subdir, None, None, print_prefix, print_info)
+                validate_mystery(ito_filepath, mod_dir, mod_root, None, None, print_prefix, print_info)
             elif line == '[event]':
                 print(f"Recognized event file")
-                validate_event(basename, root, subdir, None, None, print_prefix, print_info)
+                validate_event(ito_filepath, mod_dir, mod_root, None, None, print_prefix, print_info)
             elif line == '[enemy]':
                 print(f"Recognized enemy file")
-                validate_enemy(basename, root, subdir, None, None, print_prefix, print_info)
+                validate_enemy(ito_filepath, mod_dir, mod_root, None, None, print_prefix, print_info)
             else:
                 print(f"Unrecognized file type")
         return True, ""
@@ -38,17 +43,23 @@ def validate(basename, root, subdir="", print_prefix="", print_info=True):
 
 def main():
     parser = argparse.ArgumentParser(description='Validate a mystery/event/enemy file.')
-    parser.add_argument('path', type=str, help='Path to the .ito file')
-    parser.add_argument('--subdir', type=str, default="", help='Optional subdirectory for assets and triggers (e.g. \"mystery\\")')
-
+    parser.add_argument('ito_filepath', type=str, help='Path to the event .ito file')
+    parser.add_argument('--mod_dir', type=str, default="", help='Optional directory for mods of specific type, relative to WoH .exe location, e.g. "mystery\"')
+    parser.add_argument('--mod_root', type=str, default="", help='Optional directory from which paths will be built, defaults to .ito location')
+    
     args = parser.parse_args()
 
-    filename = args.path
-    subdir = args.subdir if args.subdir else "mystery" + os.sep
-
-    valid, valid_message = validate(os.path.basename(filename), os.path.dirname(filename), subdir)
+    ito_filepath = args.ito_filepath
+    mod_dir = args.mod_dir if args.mod_dir else "mystery" + os.sep
+    mod_root = args.mod_root if args.mod_root else os.path.dirname(ito_filepath)
+    
+    ito_filepath = ito_filepath.replace('\\', os.sep).replace('/', os.sep)
+    mod_dir = mod_dir.replace('\\', os.sep).replace('/', os.sep)
+    mod_root = mod_root.replace('\\', os.sep).replace('/', os.sep)
+    
+    valid, valid_message = validate(ito_filepath, mod_dir, mod_root)
     if not valid:
-        print(valid_message)
+        print(f"{RED}{valid_message}{RESET}")
 
 if __name__ == "__main__":
     main()
