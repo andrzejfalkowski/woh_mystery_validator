@@ -6,6 +6,7 @@ hospital
 forest
 village
 apartment
+apartments
 atorasu
 ithotu
 athyola
