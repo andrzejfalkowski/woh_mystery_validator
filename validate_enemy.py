@@ -55,7 +55,7 @@ def validate_enemy(ito_filepath, mod_dir="", mod_root="", already_checked_events
         already_checked_enemies = set()
         
     if ito_filepath in already_checked_enemies:
-        print(f"{DARK_GRAY}{print_prefix}Skipping already checked enemy file: {filename}{RESET}")
+        print(f"{DARK_GRAY}{print_prefix}Skipping already checked enemy file: {basename}{RESET}")
         return True, "" 
 
     already_checked_enemies.add(ito_filepath)        
