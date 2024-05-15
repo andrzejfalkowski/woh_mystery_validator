@@ -16,6 +16,7 @@ It's also possible to validate events and enemies directly, but because of how W
 
 ## Compatibility
 This tool is currently only compatible with World of Horror 1.01 (live public Steam release)
+
 This tool is currently only compatible with English mysteries (due to items/spells/etc. being referenced by their localized names). Value lists in config\ can be manually modified to support any language.
 
 ## Usage:
