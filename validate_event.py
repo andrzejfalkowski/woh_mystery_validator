@@ -266,7 +266,7 @@ def validate_event(ito_filepath, mod_dir="", mod_root="", already_checked_events
         path = path.strip().strip('"').replace('\\', os.sep).replace('/', os.sep)
         if key in triggers_requiring_mod_dir and triggers_requiring_mod_dir[key] and path.startswith(mod_dir):
             path = path[len(mod_dir):]
-        ref_full_path = os.path.join(root, path)
+        ref_full_path = os.path.join(mod_root, path)
         if not os.path.exists(ref_full_path):
             print(f"{RED}{print_prefix}Referenced file {path} does not exist.{RESET}")
             return False, f"{filename}: Referenced file {path} does not exist."
