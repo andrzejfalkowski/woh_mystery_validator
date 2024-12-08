@@ -33,7 +33,7 @@ def check_music_references(ito_filepath, mod_dir, mod_root, keys_file, values_fi
                 if '=' in line:
                     key, value = line.split('=', 1)
                     key = key.strip()
-                    value = value.strip().strip('"').replace('\\', os.sep).replace('/', os.sep)
+                    value = value.strip().strip('"').replace(' ', '').replace('\\', os.sep).replace('/', os.sep)
                     if key in assets_requiring_mod_dir and value:
                         if value in valid_values:
                             continue

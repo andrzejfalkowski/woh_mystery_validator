@@ -25,7 +25,7 @@ def check_asset_references(ito_filepath, mod_dir, mod_root, keys_file, allow_n_r
                 if '=' in line:
                     key, value = line.split('=', 1)
                     key = key.strip()
-                    value = value.strip().strip('"').replace('\\', os.sep).replace('/', os.sep)
+                    value = value.strip().strip('"').replace(' ', '').replace('\\', os.sep).replace('/', os.sep)
                     if key in assets_requiring_mod_dir and value:  # Only proceed if value is not empty
                         if mod_dir and assets_requiring_mod_dir[key]:
                             if not value.startswith(mod_dir):

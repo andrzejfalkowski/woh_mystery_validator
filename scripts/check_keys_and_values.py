@@ -59,7 +59,7 @@ def check_keys_and_values(filepath, keys_file, values_file, allow_empty=True):
                 if '=' in line:
                     key, value = line.split('=', 1)
                     key = key.strip()
-                    value = value.strip().strip('"')
+                    value = value.strip().strip('"').replace(' ', '')
                     #print(f"{key}:{value}")
                     if key in valid_keys:
                         if (not value or value.isspace()) and allow_empty:
